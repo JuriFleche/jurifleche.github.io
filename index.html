@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Juri'Fléché · mots fléchés juridiques</title>
+<meta name="description" content="Une grille de mots fléchés juridiques par jour, pour les étudiants en droit. Chaque réponse est sourcée : Légifrance, EUR-Lex, Conseil constitutionnel.">
+<meta property="og:title" content="Juri'Fléché">
+<meta property="og:description" content="Une grille de mots fléchés juridiques par jour, pour les étudiants en droit.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jurifleche.github.io/">
+<meta name="theme-color" content="#16213a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=Kalam:wght@700&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="tagline">Une grille juridique par jour</div>
+      <h1 class="logo">Juri<span class="apo">'</span><em>Fléché</em></h1>
+    </div>
+    <nav aria-label="Navigation">
+      <a href="#/" id="navToday">Aujourd'hui</a>
+      <a href="#/archives" id="navArch">Archives</a>
+      <a href="#/aide" id="navHelp">Comment jouer</a>
+    </nav>
+  </header>
+
+  <!-- Vue : grille -->
+  <section id="viewGrid" hidden>
+    <div class="wrap" style="gap:16px">
+      <div class="meta">
+        <h2 id="gTitle"></h2>
+        <div class="stats" id="stats"></div>
+      </div>
+      <p class="notice" id="gNotice" hidden></p>
+
+      <div class="clue-bar" id="clueBar" aria-live="polite">
+        <div class="cb-num" id="cbNum">·</div>
+        <div class="cb-main">
+          <div class="cb-text" id="cbText">Touchez une case pour commencer</div>
+          <div class="cb-meta" id="cbMeta">Les flèches rouges indiquent le sens de chaque réponse.</div>
+        </div>
+        <div class="cb-side">
+          <span class="timer" id="timer" aria-label="Chrono">00:00</span>
+          <button id="hintBtn" type="button" aria-expanded="false">Indice</button>
+        </div>
+        <div class="cb-hint" id="cbHint" hidden></div>
+      </div>
+
+      <div class="board" id="board">
+        <div class="grid" id="grid" role="grid" aria-label="Grille de mots fléchés"></div>
+      </div>
+
+      <div class="tools">
+        <button type="button" id="checkBtn" class="primary">Vérifier</button>
+        <button type="button" id="revealCell">Révéler la case</button>
+        <button type="button" id="revealWord">Révéler le mot</button>
+        <span id="dangerZone" class="confirm"><button type="button" id="clearBtn">Effacer tout</button></span>
+        <span class="sp"></span>
+        <span class="status" id="status"></span>
+      </div>
+      <div id="banner" class="banner" hidden></div>
+
+      <div class="win" id="win" hidden>
+        <h3 id="winTitle">Grille terminée</h3>
+        <div class="line" id="winLine"></div>
+        <div class="actions">
+          <button type="button" class="primary" id="shareBtn">Partager mon score</button>
+          <span class="copied" id="copied" hidden>Copié !</span>
+        </div>
+        <textarea id="shareText" readonly hidden aria-label="Texte à partager"></textarea>
+      </div>
+
+      <details id="clueList">
+        <summary>Toutes les définitions <span class="sub">numérotées comme dans la grille</span></summary>
+        <div class="cl-cols">
+          <div class="cl-group" id="clAcross"><h3>Horizontalement →</h3></div>
+          <div class="cl-group" id="clDown"><h3>Verticalement ↓</h3></div>
+        </div>
+      </details>
+
+      <details id="solutions">
+        <summary>Solutions et sources <span class="sub">attention, ça dévoile tout</span></summary>
+        <div class="sol"><table>
+          <thead><tr><th>N°</th><th>Réponse</th><th>Ce que dit le texte</th><th>Source</th></tr></thead>
+          <tbody id="solBody"></tbody>
+        </table></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Vue : archives -->
+  <section id="viewArch" hidden>
+    <div class="wrap" style="gap:14px">
+      <div class="meta"><h2>Archives</h2><div class="stats" id="stats2"></div></div>
+      <p class="notice">Toutes les grilles déjà publiées. Les grilles rattrapées ici comptent dans tes grilles résolues, pas dans ta série.</p>
+      <div class="arch" id="archList"></div>
+    </div>
+  </section>
+
+  <!-- Vue : aide -->
+  <section id="viewHelp" hidden>
+    <div class="help">
+      <h2>Comment jouer</h2>
+      <ol>
+        <li>Chaque case bleue contient une définition. La flèche rouge indique où commence la réponse et dans quel sens elle s'écrit.</li>
+        <li>Touchez une case blanche et tapez. Touchez-la une seconde fois pour changer de sens. Les accents ne comptent pas, les sigles s'écrivent sans points.</li>
+        <li>Un mot juste passe en vert et ses lettres sont verrouillées.</li>
+        <li>« Indice » affiche une définition plus complète. « Révéler » dévoile une case ou un mot, mais ça se voit dans votre score.</li>
+        <li>Une nouvelle grille arrive chaque jour à minuit, heure de Paris. Résolvez-la le jour même pour faire grandir votre série.</li>
+      </ol>
+      <p>Chaque réponse renvoie à sa source : Code civil, Code de commerce, Constitution, textes européens… Les définitions résument les textes ; reportez-vous toujours à la version en vigueur.</p>
+      <p>Votre progression reste dans ce navigateur, sans compte ni inscription.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Juri'Fléché · une grille de mots fléchés juridiques par jour, pour les étudiants en droit.</span>
+    <span>Sources : Légifrance, EUR-Lex, Conseil constitutionnel, Cour européenne des droits de l'homme.</span>
+  </footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
